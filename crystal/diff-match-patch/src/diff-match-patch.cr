@@ -1,5 +1,5 @@
 # TODO: Write documentation for `Diff::Match::Patch`
-module Diff::Match::Patch
+module DiffMatchPatch
   VERSION = "0.1.0"
 
   class DiffMatchPatch
@@ -98,6 +98,39 @@ module Diff::Match::Patch
           end
         end
       end
+    end
+
+    #      Determine the common prefix of two strings.
+
+    #  Args:
+    #    text1: First string.
+    #    text2: Second string.
+
+    #  Returns:
+    #    The number of characters common to the start of each string.
+    #
+    def diff_commonPrefix(text1, text2)
+      # Quick check for common null cases.
+      if text1 == "" || !text2 || text1[0] != text2[0]
+        return 0
+        # Binary search.
+        # Performance analysis: https://neil.fraser.name/news/2007/10/09/
+      end
+      len(text1)
+      pointermin = 0
+      pointermax = Math.min(text1.size, text2.size)
+      pointermid = pointermax
+      pointerstart = 0
+      while pointermin < pointermid
+        if text1[pointerstart...pointermid] == text2[pointerstart...pointermid]
+          pointermin = pointermid
+          pointerstart = pointermin
+        else
+          pointermax = pointermid
+        end
+        pointermid = (pointermax - pointermin) // 2 + pointermin
+      end
+      return pointermid
     end
   end
 end

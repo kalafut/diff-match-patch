@@ -1,9 +1,16 @@
 require "./spec_helper"
+require "../src/diff-match-patch"
 
-describe Diff::Match::Patch do
+describe DiffMatchPatch do
   # TODO: Write tests
 
-  it "works" do
-    false.should eq(true)
+  it "testDiffCommonPrefix" do
+    dmp = DiffMatchPatch::DiffMatchPatch.new
+    # Detect any common prefix.
+    # Null case.
+    dmp.diff_commonPrefix("abc", "xyz").should eq(0)
+
+    dmp.diff_commonPrefix("1234abcdef", "1234xyz").should eq(4)
+    dmp.diff_commonPrefix("1234", "1234xyz").should eq(4)
   end
 end
