@@ -5,7 +5,7 @@ describe DiffMatchPatch do
   # TODO: Write tests
 
   it "testDiffCommonPrefix" do
-    dmp = DiffMatchPatch::DiffMatchPatch.new
+    dmp = DiffMatchPatch.new
     # Detect any common prefix.
     # Null case.
     dmp.diff_commonPrefix("abc", "xyz").should eq(0)
