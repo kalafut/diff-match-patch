@@ -70,13 +70,13 @@ module DiffMatchPatch
         end
 
         # Trim off common prefix (speedup).
-        commonlength = diff_commonPrefix(text1, text2)
+        commonlength = diff_commonPrefix text1, text2
         commonprefix = text1[:commonlength]
         text1 = text1[commonlength..]
         text2 = text2[commonlength..]
 
         # Trim off common suffix (speedup).
-        commonlength = diff_commonSuffix(text1, text2)
+        commonlength = diff_commonSuffix text1, text2
         if commonlength == 0
           commonsuffix = ""
         else
@@ -85,14 +85,14 @@ module DiffMatchPatch
           text2 = text2[...-commonlength]
 
           # Compute the diff on the middle block.
-          diffs = diff_compute(text1, text2, checklines, deadline)
+          diffs = diff_compute text1, text2, checklines, deadline
 
           # Restore the prefix and suffix.
           if commonprefix
             diffs[...0] = [{DIFF_EQUAL, commonprefix}]
             if commonsuffix
               diffs.append({DIFF_EQUAL, commonsuffix})
-              diff_cleanupMerge(diffs)
+              diff_cleanupMerge diffs
               return diffs
             end
           end
@@ -111,20 +111,50 @@ module DiffMatchPatch
     #
     def diff_commonPrefix(text1, text2)
       # Quick check for common null cases.
-      if text1 == "" || !text2 || text1[0] != text2[0]
+      if !text1 || !text2 || text1[0] != text2[0]
         return 0
         # Binary search.
         # Performance analysis: https://neil.fraser.name/news/2007/10/09/
       end
-      len(text1)
       pointermin = 0
-      pointermax = Math.min(text1.size, text2.size)
+      pointermax = Math.min text1.size, text2.size
       pointermid = pointermax
       pointerstart = 0
       while pointermin < pointermid
         if text1[pointerstart...pointermid] == text2[pointerstart...pointermid]
           pointermin = pointermid
           pointerstart = pointermin
+        else
+          pointermax = pointermid
+        end
+        pointermid = (pointermax - pointermin) // 2 + pointermin
+      end
+      return pointermid
+    end
+
+    # Determine the common suffix of two strings.
+
+    # Args:
+    #   text1: First string.
+    #   text2: Second string.
+
+    # Returns:
+    #   The number of characters common to the end of each string.
+    def diff_commonSuffix(text1, text2)
+      # Quick check for common null cases.
+      if !text1 || !text2 || text1[-1] != text2[-1]
+        return 0
+        # Binary search.
+        # Performance analysis: https://neil.fraser.name/news/2007/10/09/
+      end
+      pointermin = 0
+      pointermax = Math.min text1.size, text2.size
+      pointermid = pointermax
+      pointerend = 0
+      while pointermin < pointermid
+        if text1[-pointermid..(text1.size - pointerend)] == text2[-pointermid..(text2.size - pointerend)]
+          pointermin = pointermid
+          pointerend = pointermin
         else
           pointermax = pointermid
         end
