@@ -1,0 +1,9 @@
+name: diff-match-patch
+version: 0.1.0
+
+authors:
+  - Jim Kalafut <jim@kalafut.net>
+
+crystal: 0.32.1
+
+license: MIT
